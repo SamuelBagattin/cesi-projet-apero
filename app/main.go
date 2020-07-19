@@ -1,17 +1,17 @@
 package main
 
 import (
-	"github.com/SamuelBagattin/cesi-projet-apero/repositories"
+	"github.com/SamuelBagattin/cesi-projet-apero/controllers"
 	"github.com/gin-gonic/gin"
 	"log"
 )
 
 func main() {
 	r := gin.Default()
-	r.GET("/restaurants", func(c *gin.Context) {
-		ListRestau := repositories.GetRestaurants()
-		c.JSON(200, ListRestau)
-	})
+	restaurantsGroup := r.Group("/restaurants")
+	{
+		restaurantsGroup.GET("", controllers.GetAll)
+	}
 
 	//liste routes :
 	/*

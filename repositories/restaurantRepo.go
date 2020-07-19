@@ -2,12 +2,10 @@ package repositories
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
-	"log"
-	"time"
-
+	"github.com/SamuelBagattin/cesi-projet-apero/models"
 	_ "github.com/lib/pq"
+	"log"
 )
 
 const (
@@ -18,7 +16,7 @@ const (
 	dbname   = ""
 )
 
-func GetRestaurants() []restaurant {
+func GetRestaurants() *[]*models.Restaurant {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=require",
 		host, port, user, password, dbname)
@@ -37,17 +35,15 @@ func GetRestaurants() []restaurant {
 		log.Fatal(err)
 	}
 
-	var restaurants []restaurant
+	var restaurants []*models.Restaurant
 
 	for rows.Next() {
-		restau := restaurant{}
+		restau := models.Restaurant{}
 		if err := rows.Scan(&restau.Id, &restau.Note, &restau.Appreciation, &restau.Prixmoyen, &restau.Adresse, &restau.Ville,
 			&restau.Datecreation, &restau.Nom, &restau.NoteId, &restau.QuartierId, &restau.CategorieId); err != nil {
 			log.Fatal(err)
 		}
-		result, _ := json.Marshal(restau)
-		log.Printf(string(result))
-		restaurants = append(restaurants, restau)
+		restaurants = append(restaurants, &restau)
 	}
 	err = rows.Close()
 	if err != nil {
@@ -57,19 +53,5 @@ func GetRestaurants() []restaurant {
 	if err != nil {
 		panic(err)
 	}
-	return restaurants
-}
-
-type restaurant struct {
-	Id           int64 `json:"id"`
-	Note         int8  `json:"note"`
-	Appreciation string
-	Prixmoyen    float32
-	Adresse      string
-	Ville        string
-	Nom          string
-	NoteId       int
-	QuartierId   int
-	CategorieId  int
-	Datecreation time.Time
+	return &restaurants
 }
