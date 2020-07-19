@@ -1,21 +1,21 @@
 drop  table if exists Restaurant, quartier, categorie, note, sondage, votant, Sondage_restaurant cascade;
 
 CREATE TABLE Categorie(
-   Id int  PRIMARY KEY,
+   Id SERIAL PRIMARY KEY,
    Libelle VARCHAR(50) not null
 
 );
 
 
 CREATE TABLE Quartier(
-   ID int PRIMARY KEY,
+   ID SERIAL PRIMARY KEY,
    Libelle VARCHAR(50) not null
 
 );
 
 
 CREATE TABLE Note(
-   Id int  PRIMARY KEY,
+   Id SERIAL  PRIMARY KEY,
    NoteCopiosite INT,
    NoteDeliciosite INT,
    NoteCadre INT,
@@ -25,29 +25,28 @@ CREATE TABLE Note(
 
 
 CREATE TABLE Sondage(
-   Id int PRIMARY KEY,
+   Id SERIAL PRIMARY KEY,
    Nom VARCHAR(50)
-
 );
 
 
 CREATE TABLE Votant(
    Nom VARCHAR(50),
-   Id int PRIMARY KEY,
+   Id SERIAL PRIMARY KEY,
    Sondage_Id int not null,
 CONSTRAINT Id_Sondage_fkey FOREIGN KEY (Sondage_Id)    REFERENCES sondage(Id)
 );
 
 
 CREATE TABLE Restaurant(
-   Id int PRIMARY KEY,
-   Note int NOT NULL,
-   Appreciation VARCHAR(200),
-   PrixMoyen DECIMAL(5,2),
-   Adresse VARCHAR(50),
+   Id SERIAL PRIMARY KEY,
+   Note int  NULL,
+   Appreciation VARCHAR(200) NULL,
+   PrixMoyen DECIMAL(5,2) NULL,
+   Adresse VARCHAR(50) NULL,
    Ville VARCHAR(50),
-   DateCreation DATE,
-   Nom VARCHAR(50),
+   DateCreation DATE NULL,
+   Nom VARCHAR(50) not NULL,
    Note_Id int not null,
    Quartier_Id int not null,
    Categorie_Id  int not null,
