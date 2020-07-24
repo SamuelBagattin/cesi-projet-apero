@@ -47,11 +47,13 @@ CREATE TABLE Restaurant(
    Ville VARCHAR(50),
    DateCreation DATE NULL,
    Nom VARCHAR(50) not NULL,
-   Note_Id int not null,
+    noteCopiosite int,
+    noteDeliciosite int,
+    noteCadre int,
+    noteAccueil int,
    Quartier_Id int not null,
    Categorie_Id  int not null,
 
-CONSTRAINT Id_Note_fkey FOREIGN KEY (Note_Id) REFERENCES Note(Id),
 CONSTRAINT Id_Quartier_fkey FOREIGN KEY (Quartier_Id) REFERENCES Quartier(Id),
 CONSTRAINT Id_Categorie_fkey FOREIGN KEY (Categorie_Id) REFERENCES Categorie(Id)
 
