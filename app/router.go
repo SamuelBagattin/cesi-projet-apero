@@ -2,13 +2,14 @@ package main
 
 import (
 	"github.com/SamuelBagattin/cesi-projet-apero/controllers"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"log"
 )
 
-
 func InitalizeRouter() {
 	r := gin.Default()
+	r.Use(cors.Default())
 	restaurantsGroup := r.Group("/restaurants")
 	{
 		restaurantsGroup.GET("", controllers.GetAll)
