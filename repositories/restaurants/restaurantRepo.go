@@ -1,4 +1,4 @@
-package repositories
+package restaurantsRepository
 
 import (
 	"github.com/SamuelBagattin/cesi-projet-apero/config"
@@ -35,7 +35,11 @@ func GetRestaurants() *[]*models.Restaurant {
 
 func GetOneRestaurant(id string) models.Restaurant {
 
-	intId, _ := strconv.Atoi(id)
+	intId, err := strconv.Atoi(id)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	row := config.DatabaseInit().QueryRow("select * from restaurant where id = $1", intId)
 
@@ -49,8 +53,7 @@ func GetOneRestaurant(id string) models.Restaurant {
 	return restau
 }
 
-func Create(rest models.Restaurant) ( error) {
-
+func Create(rest models.Restaurant) error {
 
 	_, err := config.DatabaseInit().Exec("insert into restaurant(nom, appreciation, quartier_id, categorie_id, note, prixmoyen, adresse, ville, notecopiosite, notedeliciosite, notecadre, noteaccueil, datecreation) values ($1,$2,$3,$4, $5, $6, $7, $8, $9, $10, $11, $12, current_date)",
 		rest.Nom, rest.Appreciation, rest.QuartierId, rest.CategorieId, rest.Note, rest.Prixmoyen, rest.Adresse, rest.Ville, rest.NoteCopiosite, rest.NoteDeliciosite, rest.NoteCadre, rest.NoteAccueil)
