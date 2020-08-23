@@ -1,21 +1,20 @@
-package controllers
+package restaurantsController
 
 import (
 	"github.com/SamuelBagattin/cesi-projet-apero/models"
-	"github.com/SamuelBagattin/cesi-projet-apero/repositories"
+	"github.com/SamuelBagattin/cesi-projet-apero/repositories/restaurants"
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
 )
 
 func GetAll(c *gin.Context) {
-	ListRestau := repositories.GetRestaurants()
+	ListRestau := restaurantsRepository.GetRestaurants()
 	c.JSON(200, ListRestau)
 }
 
 func GetOne(c *gin.Context) {
 	IdRestau := c.Param("id")
-	OneRestau := repositories.GetOneRestaurant(IdRestau)
+	OneRestau := restaurantsRepository.GetOneRestaurant(IdRestau)
 	c.JSON(200, OneRestau)
 }
 
@@ -27,9 +26,8 @@ func Create(c *gin.Context) {
 		panic(err)
 	}
 
-	err = repositories.Create(rest)
+	err = restaurantsRepository.Create(rest)
 	if err != nil {
-		log.Print("osuergzorfgjzofgjizoefijzoeifjzoeifjzoifjozeifjoziejfozeifjozeijfozeijfzoeifj")
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
