@@ -59,7 +59,10 @@ func Update(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&rest)
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
 	}
 
 	err = restaurantsRepository.Update(rest)
