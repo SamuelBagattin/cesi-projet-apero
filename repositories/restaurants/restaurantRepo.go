@@ -73,3 +73,16 @@ func Create(rest models.Restaurant) error {
 	return nil
 
 }
+
+func Update(rest models.Restaurant) error {
+
+	_, err := config.DatabaseInit().Exec("UPDATE restaurant set nom = $1,  appreciation = $2,  quartier_id = $3,  categorie_id = $4, prixmoyen= $5,  adresse = $6, ville=$7, notecopiosite=$8, notedeliciosite = $9, notecadre =$10, noteaccueil = $11  WHERE id = $12",
+		rest.Nom, rest.Appreciation, rest.QuartierId, rest.CategorieId, rest.Prixmoyen, rest.Adresse, rest.Ville, rest.NoteCopiosite, rest.NoteDeliciosite, rest.NoteCadre, rest.NoteAccueil, rest.Id)
+
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	return nil
+
+}

@@ -16,6 +16,7 @@ func InitalizeRouter() {
 		restaurantsGroup.GET("", restaurantsController.GetAll)
 		restaurantsGroup.GET("/:id", restaurantsController.GetOne)
 		restaurantsGroup.POST("", restaurantsController.Create)
+		restaurantsGroup.PUT("", restaurantsController.Update)
 	}
 	categoryGroup := r.Group("/restaurantCategories")
 	{
