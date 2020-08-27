@@ -53,3 +53,25 @@ func Create(c *gin.Context) {
 		})*/
 
 }
+
+func Update(c *gin.Context) {
+	var rest models.Restaurant
+
+	err := c.ShouldBindJSON(&rest)
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+	}
+
+	err = restaurantsRepository.Update(rest)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusCreated, "")
+
+}
