@@ -10,7 +10,7 @@ import (
 
 func GetRestaurants() *[]*models.Restaurant {
 
-	rows, err := config.DatabaseInit().Query("select * from restaurant")
+	rows, err := config.DatabaseInit().Query("select id, note, appreciation, prixmoyen, adresse, ville, datecreation, nom, notecopiosite, notedeliciosite, notecadre, noteaccueil, quartier_id, categorie_id from restaurant")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -20,7 +20,7 @@ func GetRestaurants() *[]*models.Restaurant {
 	for rows.Next() {
 		restau := models.Restaurant{}
 		if err := rows.Scan(&restau.Id, &restau.Note, &restau.Appreciation, &restau.Prixmoyen, &restau.Adresse, &restau.Ville,
-			&restau.Datecreation, &restau.Nom, &restau.QuartierId, &restau.CategorieId, &restau.NoteCopiosite, &restau.NoteDeliciosite, &restau.NoteCadre, &restau.NoteAccueil); err != nil {
+			&restau.Datecreation, &restau.Nom, &restau.NoteCopiosite, &restau.NoteDeliciosite, &restau.NoteCadre, &restau.NoteAccueil, &restau.QuartierId, &restau.CategorieId); err != nil {
 			log.Fatal(err)
 		}
 		restaurants = append(restaurants, &restau)
