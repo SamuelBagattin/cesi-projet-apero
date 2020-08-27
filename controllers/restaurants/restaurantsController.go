@@ -4,6 +4,7 @@ import (
 	"github.com/SamuelBagattin/cesi-projet-apero/models"
 	"github.com/SamuelBagattin/cesi-projet-apero/repositories/restaurants"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 )
 
