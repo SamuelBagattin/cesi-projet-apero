@@ -7,11 +7,17 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"log"
+	"time"
 )
 
 func InitalizeRouter() {
 	r := gin.Default()
-	r.Use(cors.Default())
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowAllOrigins = true
+	corsConfig.AllowHeaders = []string{"*"}
+	corsConfig.AllowMethods = []string{"*"}
+	corsConfig.MaxAge = 24 * time.Hour
+	r.Use(cors.New(corsConfig))
 	restaurantsGroup := r.Group("/restaurants")
 	{
 		restaurantsGroup.GET("", restaurantsController.GetAll)
