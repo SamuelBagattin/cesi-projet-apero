@@ -14,10 +14,11 @@ func InitalizeRouter() {
 	r.Use(cors.Default())
 	restaurantsGroup := r.Group("/restaurants")
 	{
-		restaurantsGroup.GET("", restaurantsController.GetAll)
-		restaurantsGroup.GET("/:id", restaurantsController.GetOne)
-		restaurantsGroup.POST("", restaurantsController.Create)
-		restaurantsGroup.PUT("", restaurantsController.Update)
+		restaurantsC := restaurantsController.GetDefaultRestaurantController()
+		restaurantsGroup.GET("", restaurantsC.GetAll)
+		restaurantsGroup.GET("/:id", restaurantsC.GetOne)
+		restaurantsGroup.POST("", restaurantsC.Create)
+		restaurantsGroup.PUT("", restaurantsC.Update)
 	}
 	categoryGroup := r.Group("/restaurantCategories")
 	{

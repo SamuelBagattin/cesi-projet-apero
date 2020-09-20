@@ -8,18 +8,47 @@ import (
 	"net/http"
 )
 
-func GetAll(c *gin.Context) {
-	ListRestau := restaurantsRepository.GetRestaurants()
+func GetDefaultRestaurantController() RestaurantsControllerInterface {
+	return &RestaurantController{
+		restaurantsRepository.GetDefaultRestaurantRepo(),
+	}
+}
+
+type RestaurantsControllerInterface interface {
+	GetAll(c *gin.Context)
+	GetOne(c *gin.Context)
+	Create(c *gin.Context)
+	Update(c *gin.Context)
+}
+
+type RestaurantController struct {
+	restaurantRepo restaurantsRepository.RestaurantRepoInterface
+}
+
+func (r *RestaurantController) GetAll(c *gin.Context) {
+	ListRestau, err := r.restaurantRepo.GetRestaurants()
+	if err != nil {
+		c.JSON(500, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
 	c.JSON(200, ListRestau)
 }
 
-func GetOne(c *gin.Context) {
+func (r *RestaurantController) GetOne(c *gin.Context) {
 	IdRestau := c.Param("id")
-	OneRestau := restaurantsRepository.GetOneRestaurant(IdRestau)
+	OneRestau, err := r.restaurantRepo.GetOneRestaurant(IdRestau)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
 	c.JSON(200, OneRestau)
 }
 
-func Create(c *gin.Context) {
+func (r *RestaurantController) Create(c *gin.Context) {
 	var rest models.Restaurant
 
 	err := c.ShouldBindJSON(&rest)
@@ -27,35 +56,17 @@ func Create(c *gin.Context) {
 		panic(err)
 	}
 
-	err = restaurantsRepository.Create(rest)
+	err = r.restaurantRepo.Create(rest)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	c.JSON(http.StatusCreated, "")
-
-	/*
-		c.JSON(http.StatusOK, gin.H{
-			"note":         rest.Note,
-			"appreciation": rest.Appreciation,
-			"prixmoyen":    rest.Prixmoyen,
-			"adresse":      rest.Adresse,
-			"ville":        rest.Ville,
-			//"datecreation":    rest.Datecreation,
-			"nom":             rest.Nom,
-			"quartierid":      rest.QuartierId,
-			"categorieid":     rest.CategorieId,
-			"notecopiosite":   rest.NoteCopiosite,
-			"notedeliciosite": rest.NoteDeliciosite,
-			"notecadre":       rest.NoteCadre,
-			"noteaccueil":     rest.NoteAccueil,
-		})*/
-
+	c.JSON(http.StatusCreated, nil)
 }
 
-func Update(c *gin.Context) {
+func (r *RestaurantController) Update(c *gin.Context) {
 	var rest models.Restaurant
 
 	err := c.ShouldBindJSON(&rest)
@@ -66,13 +77,13 @@ func Update(c *gin.Context) {
 		})
 	}
 
-	err = restaurantsRepository.Update(rest)
+	err = r.restaurantRepo.Update(rest)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	c.JSON(http.StatusCreated, "")
+	c.JSON(http.StatusCreated, nil)
 
 }
