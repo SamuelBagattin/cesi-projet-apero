@@ -1,6 +1,6 @@
 package models
 
-type RestaurantsQuartier struct {
+type PlacesDistrict struct {
 	Id      int    `json:"id"`
 	Libelle string `json:"libelle"`
 }

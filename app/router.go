@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/SamuelBagattin/cesi-projet-apero/controllers/restaurants"
-	"github.com/SamuelBagattin/cesi-projet-apero/controllers/restaurantsCategory"
-	"github.com/SamuelBagattin/cesi-projet-apero/controllers/restaurantsQuartier"
+	"github.com/SamuelBagattin/cesi-projet-apero/controllers/Places"
+	"github.com/SamuelBagattin/cesi-projet-apero/controllers/PlacesDistrict"
+	"github.com/SamuelBagattin/cesi-projet-apero/controllers/placesCategory"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -18,24 +18,30 @@ func InitalizeRouter() {
 	corsConfig.AllowMethods = []string{"*"}
 	corsConfig.MaxAge = 24 * time.Hour
 	r.Use(cors.New(corsConfig))
-	restaurantsGroup := r.Group("/restaurants")
+	restaurantsGroup := r.Group("/Places")
 	{
-		restaurantsGroup.GET("", restaurantsController.GetAll)
-		restaurantsGroup.GET("/:id", restaurantsController.GetOne)
-		restaurantsGroup.POST("", restaurantsController.Create)
-		restaurantsGroup.PUT("", restaurantsController.Update)
+		restaurantsGroup.GET("", placesController.GetAll)
+		restaurantsGroup.GET("/:id", placesController.GetOne)
+		restaurantsGroup.POST("", placesController.Create)
+		restaurantsGroup.PUT("", placesController.Update)
 	}
-	categoryGroup := r.Group("/restaurantCategories")
+	categoryGroup := r.Group("/placeCategories")
 	{
-		categoryGroup.GET("", restaurantsCategoryController.GetAll)
-		categoryGroup.POST("", restaurantsCategoryController.Create)
+		categoryGroup.GET("", placesCategoryController.GetAll)
+		categoryGroup.POST("", placesCategoryController.Create)
 	}
 
-	quartierGroup := r.Group("/restaurantQuartier")
+	quartierGroup := r.Group("/placeDistrict")
 	{
-		quartierGroup.GET("", restaurantsQuartierController.GetAll)
-		quartierGroup.POST("", restaurantsQuartierController.Create)
+		quartierGroup.GET("", placesDistrictController.GetAll)
+		quartierGroup.POST("", placesDistrictController.Create)
 	}
+	happyHourGroup := r.Group("/placeHappyHour")
+	{
+		happyHourGroup.GET("", happyHourController.GetAll)
+		happyHourGroup.POST("", happyHourController.Create)
+	}
+
 	var err = r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 	if err != nil {
 		log.Fatal(err)

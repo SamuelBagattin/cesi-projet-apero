@@ -1,6 +1,6 @@
 package models
 
-type RestaurantCategory struct {
+type PlaceCategory struct {
 	Id      int    `json:"id"`
 	Libelle string `json:"libelle"`
 }
