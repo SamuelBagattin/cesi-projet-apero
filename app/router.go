@@ -36,11 +36,6 @@ func InitalizeRouter() {
 		quartierGroup.GET("", placesDistrictController.GetAll)
 		quartierGroup.POST("", placesDistrictController.Create)
 	}
-	happyHourGroup := r.Group("/placeHappyHour")
-	{
-		happyHourGroup.GET("", happyHourController.GetAll)
-		happyHourGroup.POST("", happyHourController.Create)
-	}
 
 	var err = r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 	if err != nil {

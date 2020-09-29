@@ -8,23 +8,23 @@ import (
 )
 
 func GetAll(c *gin.Context) {
-	quartier, err := restaurantsQuartierRepository.GetPlacesDistrict()
+	district, err := restaurantsQuartierRepository.GetPlacesDistrict()
 	if err != nil {
 		c.JSON(500, err)
 	} else {
-		c.JSON(200, quartier)
+		c.JSON(200, district)
 	}
 }
 
 func Create(c *gin.Context) {
-	var quartier models.PlacesDistrict
+	var district models.PlacesDistrict
 
-	err := c.ShouldBindJSON(&quartier)
+	err := c.ShouldBindJSON(&district)
 	if err != nil {
 		panic(err)
 	}
 
-	err = restaurantsQuartierRepository.Create(quartier)
+	err = restaurantsQuartierRepository.Create(district)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),

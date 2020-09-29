@@ -57,9 +57,9 @@ func Create(c *gin.Context) {
 }
 
 func Update(c *gin.Context) {
-	var rest models.Place
+	var place models.Place
 
-	err := c.ShouldBindJSON(&rest)
+	err := c.ShouldBindJSON(&place)
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -67,7 +67,7 @@ func Update(c *gin.Context) {
 		})
 	}
 
-	err = placesRepository.Update(rest)
+	err = placesRepository.Update(place)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),

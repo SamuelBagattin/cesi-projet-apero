@@ -18,12 +18,12 @@ func GetPlaces() *[]*models.Place {
 	var places []*models.Place
 
 	for rows.Next() {
-		restau := models.Place{}
-		if err := rows.Scan(&restau.Id, &restau.Note, &restau.Appreciation, &restau.Prixmoyen, &restau.Adresse, &restau.Ville,
-			&restau.Datecreation, &restau.Nom, &restau.NoteCopiosite, &restau.NoteDeliciosite, &restau.NoteCadre, &restau.NoteAccueil, &restau.QuartierId, &restau.CategorieId); err != nil {
+		place := models.Place{}
+		if err := rows.Scan(&place.Id, &place.Note, &place.Appreciation, &place.Prixmoyen, &place.Adresse, &place.Ville,
+			&place.Datecreation, &place.Nom, &place.NoteCopiosite, &place.NoteDeliciosite, &place.NoteCadre, &place.NoteAccueil, &place.QuartierId, &place.CategorieId); err != nil {
 			log.Fatal(err)
 		}
-		places = append(places, &restau)
+		places = append(places, &place)
 	}
 	err = rows.Close()
 	if err != nil {
@@ -76,7 +76,7 @@ func Create(place models.Place) error {
 
 func Update(place models.Place) error {
 
-	_, err := config.DatabaseInit().Exec("UPDATE place set nom = $1,  appreciation = $2,  quartier_id = $3,  categorie_id = $4, prixmoyen= $5,  adresse = $6, ville=$7, notecopiosite=$8, notedeliciosite = $9, notecadre =$10, noteaccueil = $11  WHERE id = $12",
+	_, err := config.DatabaseInit().Exec("UPDATE endroit set nom = $1,  appreciation = $2,  quartier_id = $3,  categorie_id = $4, prixmoyen= $5,  adresse = $6, ville=$7, notecopiosite=$8, notedeliciosite = $9, notecadre =$10, noteaccueil = $11  WHERE id = $12",
 		place.Nom, place.Appreciation, place.QuartierId, place.CategorieId, place.Prixmoyen, place.Adresse, place.Ville, place.NoteCopiosite, place.NoteDeliciosite, place.NoteCadre, place.NoteAccueil, place.Id)
 
 	if err != nil {
