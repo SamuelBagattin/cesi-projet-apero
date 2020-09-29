@@ -1,6 +1,7 @@
 package main
 
 import (
+	happyHourController "github.com/SamuelBagattin/cesi-projet-apero/controllers/HappyHour"
 	"github.com/SamuelBagattin/cesi-projet-apero/controllers/Places"
 	"github.com/SamuelBagattin/cesi-projet-apero/controllers/PlacesDistrict"
 	"github.com/SamuelBagattin/cesi-projet-apero/controllers/placesCategory"
@@ -18,7 +19,7 @@ func InitalizeRouter() {
 	corsConfig.AllowMethods = []string{"*"}
 	corsConfig.MaxAge = 24 * time.Hour
 	r.Use(cors.New(corsConfig))
-	restaurantsGroup := r.Group("/Places")
+	restaurantsGroup := r.Group("/places")
 	{
 		restaurantsGroup.GET("", placesController.GetAll)
 		restaurantsGroup.GET("/:id", placesController.GetOne)
@@ -35,6 +36,12 @@ func InitalizeRouter() {
 	{
 		quartierGroup.GET("", placesDistrictController.GetAll)
 		quartierGroup.POST("", placesDistrictController.Create)
+	}
+
+	happyHourGroup := r.Group("/happyHour")
+	{
+		happyHourGroup.GET("", happyHourController.GetAll)
+		happyHourGroup.POST("", happyHourController.Create)
 	}
 
 	var err = r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
