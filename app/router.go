@@ -44,7 +44,7 @@ func InitalizeRouter() {
 		happyHourGroup.POST("", happyHourController.Create)
 	}
 
-	var err = r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	var err = r.Run()
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -10,14 +10,18 @@ import (
 )
 
 func GetAll(c *gin.Context) {
-	PlacesList := placesRepository.GetPlaces()
-	c.JSON(200, PlacesList)
+	placesList := placesRepository.GetPlaces()
+	if *placesList == nil {
+		c.JSON(http.StatusOK, make([]string, 0))
+		return
+	}
+	c.JSON(200, placesList)
 }
 
 func GetOne(c *gin.Context) {
-	IdPlace := c.Param("id")
-	OnePlace := placesRepository.GetOnePlace(IdPlace)
-	c.JSON(200, OnePlace)
+	idPlace := c.Param("id")
+	onePlace := placesRepository.GetOnePlace(idPlace)
+	c.JSON(200, onePlace)
 }
 
 func Create(c *gin.Context) {

@@ -27,5 +27,9 @@ func Create(c *gin.Context) {
 
 func GetAll(c *gin.Context) {
 	happyHourList := happyHourRepository.GetAll()
+	if *happyHourList == nil {
+		c.JSON(http.StatusOK, make([]string, 0))
+		return
+	}
 	c.JSON(200, happyHourList)
 }

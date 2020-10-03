@@ -12,6 +12,10 @@ func GetAll(c *gin.Context) {
 	if err != nil {
 		c.JSON(500, err)
 	} else {
+		if *categories == nil {
+			c.JSON(http.StatusOK, make([]string, 0))
+			return
+		}
 		c.JSON(200, categories)
 	}
 }
