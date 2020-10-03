@@ -7,33 +7,33 @@ import (
 	"log"
 )
 
-func GetRestaurantsQuartier() (*[]*models.RestaurantsQuartier, error) {
+func GetPlacesDistrict() (*[]*models.PlacesDistrict, error) {
 
 	rows, err := config.DatabaseInit().Query("select id, libelle from quartier")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var restaurantsQuartier []*models.RestaurantsQuartier
+	var placesDistricts []*models.PlacesDistrict
 
 	for rows.Next() {
-		quartier := models.RestaurantsQuartier{}
+		quartier := models.PlacesDistrict{}
 		if err := rows.Scan(&quartier.Id, &quartier.Libelle); err != nil {
 			log.Println(err)
-			return &restaurantsQuartier, err
+			return &placesDistricts, err
 		}
-		restaurantsQuartier = append(restaurantsQuartier, &quartier)
+		placesDistricts = append(placesDistricts, &quartier)
 	}
 	err = rows.Close()
 	if err != nil {
 		log.Println(err)
-		return &restaurantsQuartier, err
+		return &placesDistricts, err
 	}
 
-	return &restaurantsQuartier, nil
+	return &placesDistricts, nil
 }
 
-func Create(quartier models.RestaurantsQuartier) error {
+func Create(quartier models.PlacesDistrict) error {
 
 	_, err := config.DatabaseInit().Exec("insert into quartier(libelle) values ($1)",
 		quartier.Libelle)

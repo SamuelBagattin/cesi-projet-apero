@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type Restaurant struct {
+type Place struct {
 	Id              int64     `json:"id"`
 	Note            int       `json:"note"`
 	Appreciation    string    `json:"appreciation"`

@@ -1,4 +1,4 @@
-package restaurantsCategoryRepository
+package placesCategoryRepository
 
 import (
 	"github.com/SamuelBagattin/cesi-projet-apero/config"
@@ -7,36 +7,36 @@ import (
 	"log"
 )
 
-func GetRestaurantsCategories() (*[]*models.RestaurantCategory, error) {
+func GetPlacesCategories() (*[]*models.PlaceCategory, error) {
 
 	rows, err := config.DatabaseInit().Query("select id, libelle from categorie")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var restaurantCategories []*models.RestaurantCategory
+	var placeCategories []*models.PlaceCategory
 
 	for rows.Next() {
-		category := models.RestaurantCategory{}
+		category := models.PlaceCategory{}
 		if err := rows.Scan(&category.Id, &category.Libelle); err != nil {
 			log.Println(err)
-			return &restaurantCategories, err
+			return &placeCategories, err
 		}
-		restaurantCategories = append(restaurantCategories, &category)
+		placeCategories = append(placeCategories, &category)
 	}
 	err = rows.Close()
 	if err != nil {
 		log.Println(err)
-		return &restaurantCategories, err
+		return &placeCategories, err
 	}
 
-	return &restaurantCategories, nil
+	return &placeCategories, nil
 }
 
-func Create(rest models.RestaurantCategory) error {
+func Create(category models.PlaceCategory) error {
 
 	_, err := config.DatabaseInit().Exec("insert into categorie(libelle) values ($1)",
-		rest.Libelle)
+		category.Libelle)
 
 	if err != nil {
 		log.Println(err)
