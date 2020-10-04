@@ -9,7 +9,7 @@ import (
 
 func GetPlacesCategories() (*[]*models.PlaceCategory, error) {
 
-	rows, err := config.DatabaseInit().Query("select id, libelle from categorie")
+	rows, err := config.DatabaseInit().Query("select id, libelle from categorie order by libelle asc")
 	if err != nil {
 		log.Fatal(err)
 	}

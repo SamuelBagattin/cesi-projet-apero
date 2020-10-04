@@ -9,7 +9,7 @@ import (
 
 func GetPlacesDistrict() (*[]*models.PlacesDistrict, error) {
 
-	rows, err := config.DatabaseInit().Query("select id, libelle from quartier")
+	rows, err := config.DatabaseInit().Query("select id, libelle from quartier order by libelle asc")
 	if err != nil {
 		log.Fatal(err)
 	}

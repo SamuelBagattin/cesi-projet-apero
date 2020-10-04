@@ -10,7 +10,7 @@ import (
 
 func GetPlaces() *[]*models.Place {
 
-	rows, err := config.DatabaseInit().Query("select id, note, appreciation, prixmoyen, adresse, ville, datecreation, nom, notecopiosite, notedeliciosite, notecadre, noteaccueil, quartier_id, categorie_id from endroit")
+	rows, err := config.DatabaseInit().Query("select id, note, appreciation, prixmoyen, adresse, ville, datecreation, nom, notecopiosite, notedeliciosite, notecadre, noteaccueil, quartier_id, categorie_id from endroit order by note, datecreation desc")
 	if err != nil {
 		log.Fatal(err)
 	}
