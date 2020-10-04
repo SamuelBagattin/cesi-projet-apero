@@ -51,7 +51,7 @@ func GetAll() *[]*models.HappyHour {
 
 	for rows.Next() {
 		happyHour := models.HappyHour{}
-		if err := rows.Scan(&happyHour.Id, &happyHour.Nom, &happyHour.DateApero, &happyHour.DateCreation, &happyHour.User.Id, &happyHour.User.Nom, &happyHour.User.Mail, &happyHour.User.NumTel); err != nil {
+		if err := rows.Scan(&happyHour.Id, &happyHour.Nom, &happyHour.DateApero, &happyHour.DateCreation, &happyHour.Createur_Id); err != nil {
 			log.Fatal(err)
 		}
 		happyHours = append(happyHours, &happyHour)

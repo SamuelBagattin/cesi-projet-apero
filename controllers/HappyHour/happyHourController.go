@@ -26,20 +26,22 @@ func Create(c *gin.Context) {
 }
 
 func GetAll(c *gin.Context) {
+	user := c.Param("user")
+	if user == "noUser" {
+		happyHourList := happyHourRepository.GetAll()
+		if *happyHourList == nil {
+			c.JSON(http.StatusOK, make([]string, 0))
+			return
+		}
+		c.JSON(200, happyHourList)
 
-	happyHourList := happyHourRepository.GetAll()
-	if *happyHourList == nil {
-		c.JSON(http.StatusOK, make([]string, 0))
-		return
+	} else if user == "User" {
+		happyHourList := happyHourRepository.GetAllWithCreator()
+		if *happyHourList == nil {
+			c.JSON(http.StatusOK, make([]string, 0))
+			return
+		}
+		c.JSON(200, happyHourList)
 	}
-	c.JSON(200, happyHourList)
-}
 
-func GetAllWithCreator(c *gin.Context) {
-	happyHourList := happyHourRepository.GetAllWithCreator()
-	if *happyHourList == nil {
-		c.JSON(http.StatusOK, make([]string, 0))
-		return
-	}
-	c.JSON(200, happyHourList)
 }
