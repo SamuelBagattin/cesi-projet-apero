@@ -8,21 +8,24 @@ import (
 )
 
 func Create(c *gin.Context) {
-	var happy models.HappyHour
+	user := c.Param("user")
+	if user == "noUser" {
+		var happy models.HappyHour
 
-	err := c.ShouldBindJSON(&happy)
-	if err != nil {
-		panic(err)
-	}
+		err := c.ShouldBindJSON(&happy)
+		if err != nil {
+			panic(err)
+		}
 
-	err = happyHourRepository.Create(happy)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-		return
+		err = happyHourRepository.Create(happy)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		c.JSON(http.StatusCreated, "")
 	}
-	c.JSON(http.StatusCreated, "")
 }
 
 func GetAll(c *gin.Context) {
