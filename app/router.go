@@ -1,9 +1,9 @@
 package main
 
 import (
-	happyHourController "github.com/SamuelBagattin/cesi-projet-apero/controllers/HappyHour"
 	"github.com/SamuelBagattin/cesi-projet-apero/controllers/Places"
 	"github.com/SamuelBagattin/cesi-projet-apero/controllers/PlacesDistrict"
+	userController "github.com/SamuelBagattin/cesi-projet-apero/controllers/User"
 	"github.com/SamuelBagattin/cesi-projet-apero/controllers/placesCategory"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -32,16 +32,23 @@ func InitalizeRouter() {
 		categoryGroup.POST("", placesCategoryController.Create)
 	}
 
-	quartierGroup := r.Group("/placeDistrict")
+	quartierGroup := r.Group("/placeDistricts")
 	{
 		quartierGroup.GET("", placesDistrictController.GetAll)
 		quartierGroup.POST("", placesDistrictController.Create)
 	}
 
-	happyHourGroup := r.Group("/happyHour/:user")
+	happyHourGroup := r.Group("/happyHours")
 	{
 		happyHourGroup.GET("", happyHourController.GetAll)
 		happyHourGroup.POST("", happyHourController.Create)
+	}
+
+	userGroup := r.Group("/users")
+	{
+		userGroup.GET("", userController.GetAll)
+		userGroup.GET("/:id", userController.GetOneUser)
+		userGroup.POST("", userController.Create)
 	}
 
 	var err = r.Run()

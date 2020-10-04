@@ -8,7 +8,7 @@ import (
 
 func Create(happy models.HappyHour) error {
 
-	_, err := config.DatabaseInit().Exec("insert into apero(nom, dateapero, createur_id,  datecreation) values ($1,TO_DATE($2,'DDMMYYYY'),$3, current_date)", happy.Nom, happy.DateApero, happy.Createur_Id)
+	_, err := config.DatabaseInit().Exec("insert into apero(nom, dateapero, createur_id,  datecreation) values ($1, $2, $3, current_date)", happy.Nom, happy.DateApero, happy.Createur_Id)
 	if err != nil {
 		log.Println(err)
 		return err

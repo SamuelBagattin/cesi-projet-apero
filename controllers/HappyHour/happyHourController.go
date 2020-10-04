@@ -29,7 +29,7 @@ func Create(c *gin.Context) {
 }
 
 func GetAll(c *gin.Context) {
-	user := c.Param("user")
+	user := c.Query("user")
 	if user == "noUser" {
 		happyHourList := happyHourRepository.GetAll()
 		if *happyHourList == nil {
@@ -38,7 +38,7 @@ func GetAll(c *gin.Context) {
 		}
 		c.JSON(200, happyHourList)
 
-	} else if user == "User" {
+	} else if user == "user" {
 		happyHourList := happyHourRepository.GetAllWithCreator()
 		if *happyHourList == nil {
 			c.JSON(http.StatusOK, make([]string, 0))
