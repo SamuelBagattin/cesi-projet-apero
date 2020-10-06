@@ -39,7 +39,7 @@ func Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, "")
 }
 
-func GetOneUser(c *gin.Context) {
+func GetOne(c *gin.Context) {
 	idUser := c.Param("id")
 	oneUser := userRepository.GetOneUser(idUser)
 	c.JSON(200, oneUser)

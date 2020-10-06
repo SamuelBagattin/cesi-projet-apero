@@ -1,6 +1,7 @@
 package main
 
 import (
+	happyHourController "github.com/SamuelBagattin/cesi-projet-apero/controllers/HappyHour"
 	"github.com/SamuelBagattin/cesi-projet-apero/controllers/Places"
 	"github.com/SamuelBagattin/cesi-projet-apero/controllers/PlacesDistrict"
 	userController "github.com/SamuelBagattin/cesi-projet-apero/controllers/User"
@@ -47,7 +48,7 @@ func InitalizeRouter() {
 	userGroup := r.Group("/users")
 	{
 		userGroup.GET("", userController.GetAll)
-		userGroup.GET("/:id", userController.GetOneUser)
+		userGroup.GET("/:id", userController.GetOne)
 		userGroup.POST("", userController.Create)
 	}
 

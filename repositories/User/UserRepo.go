@@ -9,7 +9,7 @@ import (
 
 func GetAll() (*[]*models.User, error) {
 
-	rows, err := config.DatabaseInit().Query("select id, nom, coalesce(utilisateur.mail,'')as mail, coalesce(utilisateur.numtel,'')as numtel from utilisateur order by nom asc")
+	rows, err := config.DatabaseInit().Query("select id, nom, coalesce(utilisateur.mail,'')as mail, coalesce(utilisateur.numtel,'')as numtel from utilisateur order by nom")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -51,7 +51,7 @@ func GetOneUser(id string) models.User {
 		log.Println(err)
 	}
 
-	row := config.DatabaseInit().QueryRow("select * from utilisateur where id = $1", intId)
+	row := config.DatabaseInit().QueryRow("select id, nom, coalesce(mail,''), coalesce(numtel, '') from utilisateur where id = $1", intId)
 
 	user := models.User{}
 
