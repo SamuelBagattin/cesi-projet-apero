@@ -4,6 +4,7 @@ import (
 	"github.com/SamuelBagattin/cesi-projet-apero/models"
 	"github.com/SamuelBagattin/cesi-projet-apero/repositories/placesQuartier"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 )
 
@@ -25,7 +26,10 @@ func Create(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&district)
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
 	}
 
 	err = restaurantsQuartierRepository.Create(district)

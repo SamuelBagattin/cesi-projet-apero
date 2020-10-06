@@ -27,7 +27,7 @@ func GetPlaces() *[]*models.Place {
 	}
 	err = rows.Close()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	return &places

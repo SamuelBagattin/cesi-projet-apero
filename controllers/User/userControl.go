@@ -4,6 +4,7 @@ import (
 	"github.com/SamuelBagattin/cesi-projet-apero/models"
 	userRepository "github.com/SamuelBagattin/cesi-projet-apero/repositories/User"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 )
 
@@ -26,7 +27,10 @@ func Create(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
 	}
 
 	err = userRepository.Create(user)
