@@ -29,7 +29,10 @@ func Create(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&place)
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
 	}
 
 	err = placesRepository.Create(place)

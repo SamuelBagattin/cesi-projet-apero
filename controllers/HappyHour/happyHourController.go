@@ -4,6 +4,7 @@ import (
 	"github.com/SamuelBagattin/cesi-projet-apero/models"
 	happyHourRepository "github.com/SamuelBagattin/cesi-projet-apero/repositories/happyHour"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 )
 
@@ -13,8 +14,12 @@ func Create(c *gin.Context) {
 		var happy models.HappyHour
 
 		err := c.ShouldBindJSON(&happy)
+
 		if err != nil {
-			panic(err)
+			log.Println(err)
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
 		}
 
 		err = happyHourRepository.Create(happy)

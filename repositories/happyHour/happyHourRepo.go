@@ -34,7 +34,7 @@ func GetAllWithCreator() *[]*models.HappyHourUser {
 	}
 	err = rows.Close()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	return &happyHourUsers
@@ -58,7 +58,7 @@ func GetAll() *[]*models.HappyHour {
 	}
 	err = rows.Close()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	return &happyHours
