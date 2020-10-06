@@ -5,6 +5,7 @@ import (
 	"github.com/SamuelBagattin/cesi-projet-apero/controllers/Places"
 	"github.com/SamuelBagattin/cesi-projet-apero/controllers/PlacesDistrict"
 	userController "github.com/SamuelBagattin/cesi-projet-apero/controllers/User"
+	voteController "github.com/SamuelBagattin/cesi-projet-apero/controllers/Votes"
 	"github.com/SamuelBagattin/cesi-projet-apero/controllers/placesCategory"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -50,6 +51,11 @@ func InitalizeRouter() {
 		userGroup.GET("", userController.GetAll)
 		userGroup.GET("/:id", userController.GetOne)
 		userGroup.POST("", userController.Create)
+	}
+	voteGroup := r.Group("/votes")
+	{
+		voteGroup.GET("", voteController.GetAll)
+		voteGroup.POST("", voteController.Create)
 	}
 
 	var err = r.Run()

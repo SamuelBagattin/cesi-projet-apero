@@ -7,17 +7,17 @@ import (
 	"strconv"
 )
 
-func GetAll() (*[]*models.User, error) {
+func GetAll() (*[]*models.Vote, error) {
 
 	rows, err := config.DatabaseInit().Query("select id, nom, coalesce(utilisateur.mail,'')as mail, coalesce(utilisateur.numtel,'')as numtel from utilisateur order by nom")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var users []*models.User
+	var users []*models.Vote
 
 	for rows.Next() {
-		user := models.User{}
+		user := models.Vote{}
 		if err := rows.Scan(&user.Id, &user.Nom, &user.Mail, &user.NumTel); err != nil {
 			log.Println(err)
 			return &users, err
@@ -33,7 +33,7 @@ func GetAll() (*[]*models.User, error) {
 	return &users, nil
 }
 
-func Create(user models.User) error {
+func Create(user models.Vote) error {
 
 	_, err := config.DatabaseInit().Exec("insert into utilisateur(nom, mail, numTel) values ($1,$2,$3)", user.Nom, user.Mail, user.NumTel)
 	if err != nil {
@@ -43,7 +43,7 @@ func Create(user models.User) error {
 	return nil
 }
 
-func GetOneUser(id string) models.User {
+func GetOneUser(id string) models.Vote {
 
 	intId, err := strconv.Atoi(id)
 
@@ -53,7 +53,7 @@ func GetOneUser(id string) models.User {
 
 	row := config.DatabaseInit().QueryRow("select id, nom, coalesce(mail,''), coalesce(numtel, '') from utilisateur where id = $1", intId)
 
-	user := models.User{}
+	user := models.Vote{}
 
 	if err := row.Scan(&user.Id, &user.Nom, &user.Mail, &user.NumTel); err != nil {
 		log.Fatal(err)

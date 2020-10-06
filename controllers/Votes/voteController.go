@@ -1,31 +1,31 @@
-package userController
+package voteController
 
 import (
 	"github.com/SamuelBagattin/cesi-projet-apero/models"
-	userRepository "github.com/SamuelBagattin/cesi-projet-apero/repositories/User"
+	voteRepository "github.com/SamuelBagattin/cesi-projet-apero/repositories/votes"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 )
 
 func GetAll(c *gin.Context) {
-	user, err := userRepository.GetAll()
+	vote, err := voteRepository.GetAll()
 	if err != nil {
 		c.JSON(500, err)
 	} else {
-		if *user == nil {
+		if *vote == nil {
 			c.JSON(http.StatusOK, make([]string, 0))
 			return
 		}
-		c.JSON(200, user)
+		c.JSON(200, vote)
 	}
 }
 
 func Create(c *gin.Context) {
 
-	var user models.Vote
+	var vote models.Vote
 
-	err := c.ShouldBindJSON(&user)
+	err := c.ShouldBindJSON(&vote)
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -33,7 +33,7 @@ func Create(c *gin.Context) {
 		})
 	}
 
-	err = userRepository.Create(user)
+	err = voteRepository.Create(vote)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -41,10 +41,4 @@ func Create(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusCreated, "")
-}
-
-func GetOne(c *gin.Context) {
-	idUser := c.Param("id")
-	oneUser := userRepository.GetOneUser(idUser)
-	c.JSON(200, oneUser)
 }
