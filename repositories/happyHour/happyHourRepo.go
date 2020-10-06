@@ -16,28 +16,28 @@ func Create(happy models.HappyHour) error {
 	return nil
 }
 
-func GetAllWithCreator() *[]*models.HappyHour {
+func GetAllWithCreator() *[]*models.HappyHourUser {
 
 	rows, err := config.DatabaseInit().Query("select a.id, a.nom, a.dateApero, a.datecreation, a.createur_Id, COALESCE(u.nom,'') as nom, COALESCE(u.mail,'') as mail, COALESCE(u.numtel,'') as numTel from apero a left join utilisateur u on u.id = a.createur_id order by dateapero desc")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var happyHours []*models.HappyHour
+	var happyHourUsers []*models.HappyHourUser
 
 	for rows.Next() {
-		happyHour := models.HappyHour{}
-		if err := rows.Scan(&happyHour.Id, &happyHour.Nom, &happyHour.DateApero, &happyHour.DateCreation, &happyHour.User.Id, &happyHour.User.Nom, &happyHour.User.Mail, &happyHour.User.NumTel); err != nil {
+		happyHourUser := models.HappyHourUser{}
+		if err := rows.Scan(&happyHourUser.Id, &happyHourUser.Nom, &happyHourUser.DateApero, &happyHourUser.DateCreation, &happyHourUser.User.Id, &happyHourUser.User.Nom, &happyHourUser.User.Mail, &happyHourUser.User.NumTel); err != nil {
 			log.Fatal(err)
 		}
-		happyHours = append(happyHours, &happyHour)
+		happyHourUsers = append(happyHourUsers, &happyHourUser)
 	}
 	err = rows.Close()
 	if err != nil {
 		panic(err)
 	}
 
-	return &happyHours
+	return &happyHourUsers
 }
 
 func GetAll() *[]*models.HappyHour {
