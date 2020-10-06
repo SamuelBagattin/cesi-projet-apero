@@ -7,5 +7,5 @@ type HappyHourUser struct {
 	Nom          string    `json:"nom"`
 	DateApero    time.Time `json:"dateApero"`
 	DateCreation time.Time `json:"dateCreation"`
-	User         User      `json:"user"`
+	User         Vote      `json:"user"`
 }
