@@ -33,7 +33,7 @@ func InitalizeRouter() {
 		categoryGroup.POST("", placesCategoryController.Create)
 	}
 
-	quartierGroup := r.Group("/placeDistricts")
+	quartierGroup := r.Group("/place-districts")
 	{
 		quartierGroup.GET("", placesDistrictController.GetAll)
 		quartierGroup.POST("", placesDistrictController.Create)
