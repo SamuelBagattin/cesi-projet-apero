@@ -39,7 +39,7 @@ func InitalizeRouter() {
 		quartierGroup.POST("", placesDistrictController.Create)
 	}
 
-	happyHourGroup := r.Group("/happyHours")
+	happyHourGroup := r.Group("/happy-hours")
 	{
 		happyHourGroup.GET("", happyHourController.GetAll)
 		happyHourGroup.POST("", happyHourController.Create)
