@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"strings"
 )
 
 func Create(c *gin.Context) {
@@ -34,8 +35,32 @@ func Create(c *gin.Context) {
 }
 
 func GetAll(c *gin.Context) {
-	user := c.Query("user")
-	if user == "noUser" {
+	include := c.Query("include")
+	additionalFields := strings.Split(include, ",")
+	usr := "user"
+	includeUser := false
+	unknownIncl := make([]string, 1)
+	for _, element := range additionalFields {
+		if element != usr {
+			unknownIncl = append(unknownIncl, element)
+		} else {
+			includeUser = true
+		}
+	}
+	if len(unknownIncl) > 0 {
+		errorMessage := "Unknown fields to include: "
+		for index, el := range unknownIncl {
+			if index == 0 {
+				errorMessage = errorMessage + el
+			} else {
+				errorMessage = ", " + errorMessage + el
+			}
+		}
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": errorMessage,
+		})
+	}
+	if !includeUser {
 		happyHourList := happyHourRepository.GetAll()
 		if *happyHourList == nil {
 			c.JSON(http.StatusOK, make([]string, 0))
@@ -43,7 +68,7 @@ func GetAll(c *gin.Context) {
 		}
 		c.JSON(200, happyHourList)
 
-	} else if user == "user" {
+	} else {
 		happyHourList := happyHourRepository.GetAllWithCreator()
 		if *happyHourList == nil {
 			c.JSON(http.StatusOK, make([]string, 0))
