@@ -1,8 +1,11 @@
 package placesController
 
 import (
+	"fmt"
+	"github.com/SamuelBagattin/cesi-projet-apero/custom_errors"
 	"github.com/SamuelBagattin/cesi-projet-apero/models"
 	placesRepository "github.com/SamuelBagattin/cesi-projet-apero/repositories/places"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"log"
@@ -15,13 +18,37 @@ func GetAll(c *gin.Context) {
 		c.JSON(http.StatusOK, make([]string, 0))
 		return
 	}
-	c.JSON(200, placesList)
+	c.JSON(http.StatusOK, placesList)
 }
 
 func GetOne(c *gin.Context) {
 	idPlace := c.Param("id")
-	onePlace := placesRepository.GetOnePlace(idPlace)
-	c.JSON(200, onePlace)
+	idPlaceInt, parseError := strconv.Atoi(idPlace)
+	if parseError != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": fmt.Sprintf("Place id is not a valid integer : %s", idPlace),
+		})
+		return
+	}
+	onePlace, err := placesRepository.GetOnePlace(idPlaceInt)
+	if err != nil {
+		switch v := err.(type) {
+
+		case custom_errors.EntityNotFound:
+			c.JSON(http.StatusNotFound, gin.H{
+				"error": v.Error(),
+			})
+			return
+		default:
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
+			})
+			log.Println(err)
+			return
+		}
+
+	}
+	c.JSON(http.StatusOK, onePlace)
 }
 
 func Create(c *gin.Context) {

@@ -2,10 +2,10 @@ package placesRepository
 
 import (
 	"github.com/SamuelBagattin/cesi-projet-apero/config"
+	"github.com/SamuelBagattin/cesi-projet-apero/custom_errors"
 	"github.com/SamuelBagattin/cesi-projet-apero/models"
 	_ "github.com/lib/pq"
 	"log"
-	"strconv"
 )
 
 func GetPlaces() *[]*models.Place {
@@ -33,24 +33,24 @@ func GetPlaces() *[]*models.Place {
 	return &places
 }
 
-func GetOnePlace(id string) models.Place {
+func GetOnePlace(id int) (*models.Place, error) {
 
-	intId, err := strconv.Atoi(id)
-
-	if err != nil {
-		log.Println(err)
-	}
-
-	row := config.DatabaseInit().QueryRow("select * from endroit where id = $1", intId)
+	row := config.DatabaseInit().QueryRow("select * from endroit where id = $1", id)
 
 	place := models.Place{}
 
 	if err := row.Scan(&place.Id, &place.Note, &place.Appreciation, &place.Prixmoyen, &place.Adresse, &place.Ville,
 		&place.Datecreation, &place.Nom, &place.QuartierId, &place.CategorieId, &place.NoteCopiosite, &place.NoteDeliciosite, &place.NoteCadre, &place.NoteAccueil); err != nil {
-		log.Fatal(err)
+		if err.Error() == "sql: no rows in result set" {
+			return nil, custom_errors.EntityNotFound{
+				Id: id,
+			}
+		}
+		log.Println(err)
+		return nil, err
 	}
 
-	return place
+	return &place, nil
 }
 
 func Create(place models.Place) error {
