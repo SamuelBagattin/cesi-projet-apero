@@ -23,7 +23,7 @@ func GetAll(c *gin.Context) {
 
 func Create(c *gin.Context) {
 
-	var user models.Vote
+	var user models.User
 
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
