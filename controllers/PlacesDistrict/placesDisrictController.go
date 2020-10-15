@@ -1,6 +1,7 @@
 package placesDistrictController
 
 import (
+	"github.com/SamuelBagattin/cesi-projet-apero/controllers"
 	"github.com/SamuelBagattin/cesi-projet-apero/models"
 	"github.com/SamuelBagattin/cesi-projet-apero/repositories/placesQuartier"
 	"github.com/gin-gonic/gin"
@@ -11,14 +12,16 @@ import (
 func GetAll(c *gin.Context) {
 	district, err := restaurantsQuartierRepository.GetPlacesDistrict()
 	if err != nil {
-		c.JSON(500, err)
-	} else {
-		if *district == nil {
-			c.JSON(http.StatusOK, make([]string, 0))
-			return
-		}
-		c.JSON(200, district)
+		log.Println(err)
+		controllers.SendInternalServerError(c, err)
+		return
 	}
+	if *district == nil {
+		c.JSON(http.StatusOK, make([]string, 0))
+		return
+	}
+	c.JSON(200, district)
+	return
 }
 
 func Create(c *gin.Context) {
@@ -27,17 +30,15 @@ func Create(c *gin.Context) {
 	err := c.ShouldBindJSON(&district)
 	if err != nil {
 		log.Println(err)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		controllers.SendJsonError(c)
+		return
 	}
 
 	err = restaurantsQuartierRepository.Create(district)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
+		controllers.SendInternalServerError(c, err)
 		return
 	}
 	c.JSON(http.StatusCreated, "")
+	return
 }

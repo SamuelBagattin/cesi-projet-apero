@@ -17,19 +17,16 @@ func Create(c *gin.Context) {
 
 	if err != nil {
 		log.Println(err)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		controllers.SendJsonError(c)
 	}
 
 	err = happyHourRepository.Create(happy)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
+		controllers.SendInternalServerError(c, err)
 		return
 	}
-	c.JSON(http.StatusCreated, "")
+	controllers.SendEntityCreatedResponse(c)
+	return
 }
 
 func GetAll(c *gin.Context) {
@@ -37,27 +34,35 @@ func GetAll(c *gin.Context) {
 	knownIncludes := []string{"user"}
 	includeFields, err := controllers.GetIncludeFields(include, knownIncludes)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		controllers.SendBadRequestError(c, err)
 		return
 	}
 	if includeFields != nil && !core.ArrayContainsString(includeFields, knownIncludes[0]) {
-		happyHourList := happyHourRepository.GetAll()
+		happyHourList, err := happyHourRepository.GetAll()
+		if err != nil {
+			log.Println(err)
+			controllers.SendInternalServerError(c, err)
+			return
+		}
 		if *happyHourList == nil {
 			c.JSON(http.StatusOK, make([]string, 0))
 			return
 		}
-		c.JSON(200, happyHourList)
+		c.JSON(http.StatusOK, happyHourList)
 		return
 
 	} else {
-		happyHourList := happyHourRepository.GetAllWithCreator()
+		happyHourList, err := happyHourRepository.GetAllWithCreator()
+		if err != nil {
+			log.Println(err)
+			controllers.SendInternalServerError(c, err)
+			return
+		}
 		if *happyHourList == nil {
 			c.JSON(http.StatusOK, make([]string, 0))
 			return
 		}
-		c.JSON(200, happyHourList)
+		c.JSON(http.StatusOK, happyHourList)
 		return
 	}
 

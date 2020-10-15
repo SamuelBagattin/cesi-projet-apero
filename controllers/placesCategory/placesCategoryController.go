@@ -1,6 +1,7 @@
 package placesCategoryController
 
 import (
+	"github.com/SamuelBagattin/cesi-projet-apero/controllers"
 	"github.com/SamuelBagattin/cesi-projet-apero/models"
 	"github.com/SamuelBagattin/cesi-projet-apero/repositories/placesCategory"
 	"github.com/gin-gonic/gin"
@@ -11,14 +12,16 @@ import (
 func GetAll(c *gin.Context) {
 	categories, err := placesCategoryRepository.GetPlacesCategories()
 	if err != nil {
-		c.JSON(500, err)
-	} else {
-		if *categories == nil {
-			c.JSON(http.StatusOK, make([]string, 0))
-			return
-		}
-		c.JSON(200, categories)
+		log.Println(err)
+		controllers.SendInternalServerError(c, err)
+		return
 	}
+	if *categories == nil {
+		c.JSON(http.StatusOK, make([]string, 0))
+		return
+	}
+	c.JSON(http.StatusOK, categories)
+	return
 }
 
 func Create(c *gin.Context) {
@@ -27,17 +30,15 @@ func Create(c *gin.Context) {
 	err := c.ShouldBindJSON(&category)
 	if err != nil {
 		log.Println(err)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		controllers.SendJsonError(c)
+		return
 	}
 
 	err = placesCategoryRepository.Create(category)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
+		controllers.SendInternalServerError(c, err)
 		return
 	}
 	c.JSON(http.StatusCreated, "")
+	return
 }
