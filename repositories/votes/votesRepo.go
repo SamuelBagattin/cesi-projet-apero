@@ -8,7 +8,7 @@ import (
 
 func GetAll() (*[]*models.Vote, error) {
 
-	rows, err := config.DatabaseInit().Query("select id, nbVotes, datevote, endroit_id, utilisateur_id, apero_id  from vote ")
+	rows, err := config.DatabaseInit().Query("select id, COALESCE(nbvotes,'') as nbvotes, datevote, endroit_id, utilisateur_id, apero_id  from vote ")
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +32,7 @@ func GetAll() (*[]*models.Vote, error) {
 
 func Create(vote models.Vote) error {
 
-	_, err := config.DatabaseInit().Exec("insert into vote (utilisateur_id, apero_id, endroit_id) values ($1,$2,$3, vote.UserId, vote.HappyHourId, vote.PlaceId")
+	_, err := config.DatabaseInit().Exec("insert into vote (utilisateur_id, apero_id, endroit_id, datevote) values ($1,$2,$3,current_date)", vote.UserId, vote.HappyhourId, vote.PlaceId)
 	if err != nil {
 		return err
 	}
