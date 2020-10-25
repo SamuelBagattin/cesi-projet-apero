@@ -27,13 +27,14 @@ func SendInternalServerError(ctx *gin.Context, err error) {
 func SendIntegerParsingError(ctx *gin.Context, i string) {
 	ctx.JSON(http.StatusBadRequest, gin.H{
 		"errorCode": http.StatusBadRequest,
-		"error":     fmt.Sprintf("Place id is not a valid integer : %s", i),
+		"error":     fmt.Sprintf("Id is not a valid integer : %s", i),
 	})
 }
 
 func SendBadRequestError(ctx *gin.Context, err error) {
 	ctx.JSON(http.StatusBadRequest, gin.H{
-		"error": err.Error(),
+		"errorCode": http.StatusBadRequest,
+		"error":     err.Error(),
 	})
 }
 
@@ -55,7 +56,6 @@ func GetIncludeFields(include string, knownFields []string) (*[]string, error) {
 				}
 			}
 		}
-		fmt.Printf("%v", len(unknownIncl))
 		if len(unknownIncl) > 0 {
 			errorMessage := "Unknown fields to include: "
 			for index, el := range unknownIncl {

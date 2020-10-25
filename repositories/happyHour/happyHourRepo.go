@@ -8,7 +8,7 @@ import (
 
 func Create(happy models.HappyHour) error {
 
-	_, err := config.DatabaseInit().Exec("insert into apero(nom, dateapero, createur_id,  datecreation) values ($1, $2, $3, current_date)", happy.Nom, happy.DateApero, happy.Createur_Id)
+	_, err := config.DatabaseInit().Exec("insert into apero(nom, dateapero, createur_id,  datecreation) values ($1, $2, $3, current_date)", happy.Nom, happy.DateApero, happy.CreateurId)
 	if err != nil {
 		return err
 	}
@@ -51,7 +51,7 @@ func GetAll() (*[]*models.HappyHour, error) {
 
 	for rows.Next() {
 		happyHour := models.HappyHour{}
-		if err := rows.Scan(&happyHour.Id, &happyHour.Nom, &happyHour.DateApero, &happyHour.DateCreation, &happyHour.Createur_Id); err != nil {
+		if err := rows.Scan(&happyHour.Id, &happyHour.Nom, &happyHour.DateApero, &happyHour.DateCreation, &happyHour.CreateurId); err != nil {
 			return nil, err
 		}
 		happyHours = append(happyHours, &happyHour)

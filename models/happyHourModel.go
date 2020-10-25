@@ -7,5 +7,5 @@ type HappyHour struct {
 	Nom          string    `json:"nom"`
 	DateApero    time.Time `json:"dateApero"`
 	DateCreation time.Time `json:"dateCreation"`
-	Createur_Id  int32     `json:"createur_Id"`
+	CreateurId   int32     `json:"createur_Id"`
 }

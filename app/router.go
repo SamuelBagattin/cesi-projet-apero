@@ -56,6 +56,7 @@ func InitalizeRouter() {
 	{
 		voteGroup.GET("", voteController.GetAll)
 		voteGroup.POST("", voteController.Create)
+		voteGroup.PUT("", voteController.Update)
 	}
 
 	var err = r.Run()

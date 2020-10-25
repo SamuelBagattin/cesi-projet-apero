@@ -1,59 +1,70 @@
-drop table if exists Restaurant, quartier, categorie, note, sondage, votant, Sondage_restaurant cascade;
+drop table if exists Endroit, quartier, categorie, Apero, Vote, Groupe_Utilisateur, Groupe,Utilisateur,Groupe,Authentification,Sessions cascade;
 
 CREATE TABLE Categorie
 (
     Id      SERIAL PRIMARY KEY,
-    Libelle VARCHAR(50) not null
-
+    Libelle VARCHAR(50) NOT NULL
 );
 
 
 CREATE TABLE Quartier
 (
     ID      SERIAL PRIMARY KEY,
-    Libelle VARCHAR(50) not null
-
+    Libelle VARCHAR(50) NOT NULL
 );
 
-
-CREATE TABLE Apero
-(
-    Id           SERIAL PRIMARY KEY,
-    Nom          VARCHAR(50) not null,
-    DateApero    DATE,
-    DateCreation DATE,
-    Createur_Id int not null,
-    CONSTRAINT Createur_Id_fkey FOREIGN KEY (Createur_Id) REFERENCES Utilisateur (Id)
-
-);
 
 
 CREATE TABLE Utilisateur
 (
-    Nom    VARCHAR(50) not null,
-    Id     SERIAL PRIMARY KEY,
-    Mail   VARCHAR(50),
-    NumTel VARCHAR(15),
-    Photo  BYTEA
+    Nom             VARCHAR(50) NOT NULL,
+    Id              SERIAL PRIMARY KEY,
+    Mail            VARCHAR(50) DEFAULT '',
+    NumTel          VARCHAR(15) NOT NULL UNIQUE,
+    DateInscription DATE        NOT NULL
+);
+
+CREATE TABLE Authentification
+(
+    Id             SERIAL PRIMARY KEY,
+    Pass           VARCHAR(500) NOT NULL,
+    Utilisateur_Id int          NOT NULL,
+    CONSTRAINT Utilisateur_Id_fkey FOREIGN KEY (Utilisateur_Id) REFERENCES Utilisateur (Id)
+);
+
+CREATE TABLE Sessions
+(
+    Id             SERIAL PRIMARY KEY,
+    Utilisateur_Id INT NOT NULL,
+    CONSTRAINT Utilisateur_Id_fkey FOREIGN KEY (Utilisateur_Id) REFERENCES Utilisateur (id)
+);
+
+CREATE TABLE Apero
+(
+    Id           SERIAL PRIMARY KEY,
+    Nom          VARCHAR(50) NOT NULL,
+    DateApero    DATE        NOT NULL,
+    DateCreation DATE        NOT NULL,
+    Createur_Id  int         NOT NULL,
+    CONSTRAINT Createur_Id_fkey FOREIGN KEY (Createur_Id) REFERENCES Utilisateur (Id)
 );
 
 
 CREATE TABLE Endroit
 (
     Id              SERIAL PRIMARY KEY,
-    Note            int           NULL,
-    Appreciation    VARCHAR(200)  NULL,
-    PrixMoyen       DECIMAL(5, 2) NULL,
-    Adresse         VARCHAR(50)   NULL,
-    Ville           VARCHAR(50),
-    DateCreation    DATE          NULL,
-    Nom             VARCHAR(50)   not NULL,
-    noteCopiosite   int,
-    noteDeliciosite int,
-    noteCadre       int,
-    noteAccueil     int,
-    Quartier_Id     int           not null,
-    Categorie_Id    int           not null,
+    Appreciation    VARCHAR(200)  DEFAULT '',
+    PrixMoyen       DECIMAL(5, 2) DEFAULT 0,
+    Adresse         VARCHAR(50)   DEFAULT '',
+    Ville           VARCHAR(50) NOT NULL,
+    DateCreation    DATE        NOT NULL,
+    Nom             VARCHAR(50) NOT NULL,
+    noteCopiosite   INT           DEFAULT 1,
+    noteDeliciosite INT           DEFAULT 1,
+    noteCadre       INT           DEFAULT 1,
+    noteAccueil     INT           DEFAULT 1,
+    Quartier_Id     INT         NOT NULL,
+    Categorie_Id    INT         NOT NULL,
 
     CONSTRAINT Id_Quartier_fkey FOREIGN KEY (Quartier_Id) REFERENCES Quartier (Id),
     CONSTRAINT Id_Categorie_fkey FOREIGN KEY (Categorie_Id) REFERENCES Categorie (Id)
@@ -62,11 +73,10 @@ CREATE TABLE Endroit
 CREATE TABLE Vote
 (
     Id             SERIAL PRIMARY KEY,
-    NbVotes        VARCHAR(50),
-    DateVote Date,
-    Endroit_Id     int,
-    Utilisateur_Id int,
-    Apero_Id       int,
+    DateVote       Date NOT NULL,
+    Endroit_Id     int  NOT NULL,
+    Utilisateur_Id int  NOT NULL,
+    Apero_Id       int  NOT NULL,
     CONSTRAINT Id_endroit_fkey FOREIGN KEY (Endroit_Id) REFERENCES Endroit (Id),
     CONSTRAINT Id_Utilisateur_fkey FOREIGN KEY (Utilisateur_Id) REFERENCES Utilisateur (Id),
     CONSTRAINT Id_Apero_fkey FOREIGN KEY (Apero_Id) REFERENCES Apero (Id)
@@ -75,18 +85,17 @@ CREATE TABLE Vote
 CREATE TABLE Groupe
 (
     Id             SERIAL PRIMARY KEY,
-    Nom            VARCHAR(50),
-    Icone          bytea,
-    Utilisateur_Id int,
-    Apero_Id       int,
-    CONSTRAINT Id_Utilisateur_fkey FOREIGN KEY (Utilisateur_Id) REFERENCES Utilisateur (Id)
+    Nom            VARCHAR(50) NOT NULL,
+    Createur_Id int         NOT NULL,
+    Apero_Id       int         NOT NULL,
+    CONSTRAINT Id_Utilisateur_fkey FOREIGN KEY (Createur_Id) REFERENCES Utilisateur (Id)
 );
 
 CREATE TABLE Groupe_Utilisateur
 (
 
-    Groupe_Id      int,
-    Utilisateur_Id int,
+    Groupe_Id      int NOT NULL,
+    Utilisateur_Id int NOT NULL,
     CONSTRAINT Id_Utilisateur_fkey FOREIGN KEY (Utilisateur_Id) REFERENCES Utilisateur (Id),
     CONSTRAINT Id_Groupe_fkey FOREIGN KEY (Groupe_Id) REFERENCES Groupe (Id)
 
