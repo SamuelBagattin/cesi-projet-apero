@@ -4,6 +4,8 @@ import (
 	happyHourController "github.com/SamuelBagattin/cesi-projet-apero/controllers/HappyHour"
 	"github.com/SamuelBagattin/cesi-projet-apero/controllers/Places"
 	"github.com/SamuelBagattin/cesi-projet-apero/controllers/PlacesDistrict"
+	userController "github.com/SamuelBagattin/cesi-projet-apero/controllers/User"
+	voteController "github.com/SamuelBagattin/cesi-projet-apero/controllers/Votes"
 	"github.com/SamuelBagattin/cesi-projet-apero/controllers/placesCategory"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -32,16 +34,29 @@ func InitalizeRouter() {
 		categoryGroup.POST("", placesCategoryController.Create)
 	}
 
-	quartierGroup := r.Group("/placeDistrict")
+	quartierGroup := r.Group("/place-districts")
 	{
 		quartierGroup.GET("", placesDistrictController.GetAll)
 		quartierGroup.POST("", placesDistrictController.Create)
 	}
 
-	happyHourGroup := r.Group("/happyHour")
+	happyHourGroup := r.Group("/happy-hours")
 	{
 		happyHourGroup.GET("", happyHourController.GetAll)
 		happyHourGroup.POST("", happyHourController.Create)
+	}
+
+	userGroup := r.Group("/users")
+	{
+		userGroup.GET("", userController.GetAll)
+		userGroup.GET("/:id", userController.GetOne)
+		userGroup.POST("", userController.Create)
+	}
+	voteGroup := r.Group("/votes")
+	{
+		voteGroup.GET("", voteController.GetAll)
+		voteGroup.POST("", voteController.Create)
+		voteGroup.PUT("", voteController.Update)
 	}
 
 	var err = r.Run()

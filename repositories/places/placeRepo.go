@@ -2,17 +2,16 @@ package placesRepository
 
 import (
 	"github.com/SamuelBagattin/cesi-projet-apero/config"
+	"github.com/SamuelBagattin/cesi-projet-apero/custom_errors"
 	"github.com/SamuelBagattin/cesi-projet-apero/models"
 	_ "github.com/lib/pq"
-	"log"
-	"strconv"
 )
 
-func GetPlaces() *[]*models.Place {
+func GetPlaces() (*[]*models.Place, error) {
 
-	rows, err := config.DatabaseInit().Query("select id, note, appreciation, prixmoyen, adresse, ville, datecreation, nom, notecopiosite, notedeliciosite, notecadre, noteaccueil, quartier_id, categorie_id from endroit")
+	rows, err := config.DatabaseInit().Query("select id, note, appreciation, prixmoyen, adresse, ville, datecreation, nom, notecopiosite, notedeliciosite, notecadre, noteaccueil, quartier_id, categorie_id from endroit order by note, datecreation desc")
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	var places []*models.Place
@@ -21,36 +20,35 @@ func GetPlaces() *[]*models.Place {
 		place := models.Place{}
 		if err := rows.Scan(&place.Id, &place.Note, &place.Appreciation, &place.Prixmoyen, &place.Adresse, &place.Ville,
 			&place.Datecreation, &place.Nom, &place.NoteCopiosite, &place.NoteDeliciosite, &place.NoteCadre, &place.NoteAccueil, &place.QuartierId, &place.CategorieId); err != nil {
-			log.Fatal(err)
+			return nil, err
 		}
 		places = append(places, &place)
 	}
 	err = rows.Close()
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	return &places
+	return &places, nil
 }
 
-func GetOnePlace(id string) models.Place {
+func GetOnePlace(id int) (*models.Place, error) {
 
-	intId, err := strconv.Atoi(id)
-
-	if err != nil {
-		log.Println(err)
-	}
-
-	row := config.DatabaseInit().QueryRow("select * from endroit where id = $1", intId)
+	row := config.DatabaseInit().QueryRow("select * from endroit where id = $1", id)
 
 	place := models.Place{}
 
 	if err := row.Scan(&place.Id, &place.Note, &place.Appreciation, &place.Prixmoyen, &place.Adresse, &place.Ville,
 		&place.Datecreation, &place.Nom, &place.QuartierId, &place.CategorieId, &place.NoteCopiosite, &place.NoteDeliciosite, &place.NoteCadre, &place.NoteAccueil); err != nil {
-		log.Fatal(err)
+		if err.Error() == "sql: no rows in result set" {
+			return nil, custom_errors.EntityNotFound{
+				Id: id,
+			}
+		}
+		return nil, err
 	}
 
-	return place
+	return &place, nil
 }
 
 func Create(place models.Place) error {
@@ -59,17 +57,8 @@ func Create(place models.Place) error {
 		place.Nom, place.Appreciation, place.QuartierId, place.CategorieId, place.Note, place.Prixmoyen, place.Adresse, place.Ville, place.NoteCopiosite, place.NoteDeliciosite, place.NoteCadre, place.NoteAccueil)
 
 	if err != nil {
-		log.Println(err)
 		return err
 	}
-
-	/*var idResult, idError = res.LastInsertId()
-
-	if idError != nil {
-		log.Println(idError)
-		return 0, idError
-	}*/
-
 	return nil
 
 }
@@ -80,7 +69,6 @@ func Update(place models.Place) error {
 		place.Nom, place.Appreciation, place.QuartierId, place.CategorieId, place.Prixmoyen, place.Adresse, place.Ville, place.NoteCopiosite, place.NoteDeliciosite, place.NoteCadre, place.NoteAccueil, place.Id)
 
 	if err != nil {
-		log.Println(err)
 		return err
 	}
 	return nil

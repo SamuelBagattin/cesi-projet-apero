@@ -9,9 +9,10 @@ import (
 
 func GetPlacesCategories() (*[]*models.PlaceCategory, error) {
 
-	rows, err := config.DatabaseInit().Query("select id, libelle from categorie")
+	rows, err := config.DatabaseInit().Query("select id, libelle from categorie order by libelle asc")
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return nil, err
 	}
 
 	var placeCategories []*models.PlaceCategory
@@ -19,15 +20,13 @@ func GetPlacesCategories() (*[]*models.PlaceCategory, error) {
 	for rows.Next() {
 		category := models.PlaceCategory{}
 		if err := rows.Scan(&category.Id, &category.Libelle); err != nil {
-			log.Println(err)
-			return &placeCategories, err
+			return nil, err
 		}
 		placeCategories = append(placeCategories, &category)
 	}
 	err = rows.Close()
 	if err != nil {
-		log.Println(err)
-		return &placeCategories, err
+		return nil, err
 	}
 
 	return &placeCategories, nil
@@ -39,7 +38,6 @@ func Create(category models.PlaceCategory) error {
 		category.Libelle)
 
 	if err != nil {
-		log.Println(err)
 		return err
 	}
 

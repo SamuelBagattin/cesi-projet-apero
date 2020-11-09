@@ -1,8 +1,11 @@
 package placesController
 
 import (
+	"github.com/SamuelBagattin/cesi-projet-apero/controllers"
+	"github.com/SamuelBagattin/cesi-projet-apero/custom_errors"
 	"github.com/SamuelBagattin/cesi-projet-apero/models"
 	placesRepository "github.com/SamuelBagattin/cesi-projet-apero/repositories/places"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"log"
@@ -10,18 +13,46 @@ import (
 )
 
 func GetAll(c *gin.Context) {
-	placesList := placesRepository.GetPlaces()
+	placesList, err := placesRepository.GetPlaces()
+	if err != nil {
+		log.Println(err)
+		controllers.SendInternalServerError(c, err)
+		return
+	}
 	if *placesList == nil {
 		c.JSON(http.StatusOK, make([]string, 0))
 		return
 	}
-	c.JSON(200, placesList)
+	c.JSON(http.StatusOK, placesList)
+	return
 }
 
 func GetOne(c *gin.Context) {
-	idPlace := c.Param("id")
-	onePlace := placesRepository.GetOnePlace(idPlace)
-	c.JSON(200, onePlace)
+	idPlace := c.Param(controllers.IdQueryparam)
+	idPlaceInt, parseError := strconv.Atoi(idPlace)
+	if parseError != nil {
+		controllers.SendIntegerParsingError(c, idPlace)
+		return
+	}
+	onePlace, err := placesRepository.GetOnePlace(idPlaceInt)
+	if err != nil {
+		switch v := err.(type) {
+
+		case custom_errors.EntityNotFound:
+			c.JSON(http.StatusNotFound, gin.H{
+				"error": v.Error(),
+			})
+			return
+		default:
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
+			})
+			log.Println(err)
+			return
+		}
+
+	}
+	c.JSON(http.StatusOK, onePlace)
 }
 
 func Create(c *gin.Context) {
@@ -29,35 +60,18 @@ func Create(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&place)
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		controllers.SendJsonError(c)
+		return
 	}
 
 	err = placesRepository.Create(place)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
+		controllers.SendInternalServerError(c, err)
 		return
 	}
 	c.JSON(http.StatusCreated, "")
-
-	/*
-		c.JSON(http.StatusOK, gin.H{
-			"note":         place.Note,
-			"appreciation": place.Appreciation,
-			"prixmoyen":    place.Prixmoyen,
-			"adresse":      place.Adresse,
-			"ville":        place.Ville,
-			//"datecreation":    place.Datecreation,
-			"nom":             place.Nom,
-			"quartierid":      place.QuartierId,
-			"categorieid":     place.CategorieId,
-			"notecopiosite":   place.NoteCopiosite,
-			"notedeliciosite": place.NoteDeliciosite,
-			"notecadre":       place.NoteCadre,
-			"noteaccueil":     place.NoteAccueil,
-		})*/
-
+	return
 }
 
 func Update(c *gin.Context) {
@@ -66,18 +80,15 @@ func Update(c *gin.Context) {
 	err := c.ShouldBindJSON(&place)
 	if err != nil {
 		log.Println(err)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		controllers.SendJsonError(c)
+		return
 	}
 
 	err = placesRepository.Update(place)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
+		controllers.SendInternalServerError(c, err)
 		return
 	}
 	c.JSON(http.StatusCreated, "")
-
+	return
 }
