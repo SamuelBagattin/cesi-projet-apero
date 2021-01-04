@@ -9,7 +9,7 @@ import (
 
 func GetPlaces() (*[]*models.Place, error) {
 
-	rows, err := config.DatabaseInit().Query("select id, note, appreciation, prixmoyen, adresse, ville, datecreation, nom, notecopiosite, notedeliciosite, notecadre, noteaccueil, quartier_id, categorie_id from endroit order by note, datecreation desc")
+	rows, err := config.DatabaseInit().Query("select id, (noteaccueil + notecadre + notedeliciosite + notecopiosite)::decimal/4 as note, appreciation, prixmoyen, adresse, ville, datecreation, nom, notecopiosite, notedeliciosite, notecadre, noteaccueil, quartier_id, categorie_id from endroit order by datecreation desc")
 	if err != nil {
 		return nil, err
 	}
@@ -34,11 +34,11 @@ func GetPlaces() (*[]*models.Place, error) {
 
 func GetOnePlace(id int) (*models.Place, error) {
 
-	row := config.DatabaseInit().QueryRow("select * from endroit where id = $1", id)
+	row := config.DatabaseInit().QueryRow("select id, appreciation, prixmoyen, adresse, ville, datecreation, nom, quartier_id, categorie_id, notecopiosite, notedeliciosite, notecadre, noteaccueil from endroit where id = $1", id)
 
 	place := models.Place{}
 
-	if err := row.Scan(&place.Id, &place.Note, &place.Appreciation, &place.Prixmoyen, &place.Adresse, &place.Ville,
+	if err := row.Scan(&place.Id, &place.Appreciation, &place.Prixmoyen, &place.Adresse, &place.Ville,
 		&place.Datecreation, &place.Nom, &place.QuartierId, &place.CategorieId, &place.NoteCopiosite, &place.NoteDeliciosite, &place.NoteCadre, &place.NoteAccueil); err != nil {
 		if err.Error() == "sql: no rows in result set" {
 			return nil, custom_errors.EntityNotFound{
@@ -53,8 +53,8 @@ func GetOnePlace(id int) (*models.Place, error) {
 
 func Create(place models.Place) error {
 
-	_, err := config.DatabaseInit().Exec("insert into endroit(nom, appreciation, quartier_id, categorie_id, note, prixmoyen, adresse, ville, notecopiosite, notedeliciosite, notecadre, noteaccueil, datecreation) values ($1,$2,$3,$4, $5, $6, $7, $8, $9, $10, $11, $12, current_date)",
-		place.Nom, place.Appreciation, place.QuartierId, place.CategorieId, place.Note, place.Prixmoyen, place.Adresse, place.Ville, place.NoteCopiosite, place.NoteDeliciosite, place.NoteCadre, place.NoteAccueil)
+	_, err := config.DatabaseInit().Exec("insert into endroit(nom, appreciation, quartier_id, categorie_id, prixmoyen, adresse, ville, notecopiosite, notedeliciosite, notecadre, noteaccueil, datecreation) values ($1,$2,$3,$4, $5, $6, $7, $8, $9, $10, $11, current_date)",
+		place.Nom, place.Appreciation, place.QuartierId, place.CategorieId, place.Prixmoyen, place.Adresse, place.Ville, place.NoteCopiosite, place.NoteDeliciosite, place.NoteCadre, place.NoteAccueil)
 
 	if err != nil {
 		return err
