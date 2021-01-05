@@ -8,9 +8,16 @@ import (
 	"strings"
 )
 
-func GetAll() (*[]*models.Vote, error) {
+func GetAll(aperoid int) (*[]*models.Vote, error) {
 
-	rows, err := config.DatabaseInit().Query("select id, datevote, endroit_id, utilisateur_id, apero_id  from vote ")
+	rows, err := config.DatabaseInit().Query(`
+select vote.id, vote.datevote, vote.endroit_id, vote.utilisateur_id, vote.apero_id, e.id, e.appreciation, e.prixmoyen, e.adresse, e.ville, e.datecreation, e.nom, e.notecopiosite, e.notedeliciosite, e.notecadre, e.noteaccueil,(noteaccueil + notecadre + notedeliciosite + notecopiosite)::decimal/4 as note, e.quartier_id, e.categorie_id, a.id, a.nom, a.dateapero, a.datecreation, a.createur_id, u.nom, u.id, u.mail, u.numtel
+from vote
+         inner join endroit e on e.id = vote.endroit_id
+         inner join apero a on a.id = vote.apero_id
+         inner join utilisateur u on u.id = vote.utilisateur_id
+		 where a.id = $1;
+         `, aperoid)
 	if err != nil {
 		return nil, err
 	}
@@ -19,7 +26,7 @@ func GetAll() (*[]*models.Vote, error) {
 
 	for rows.Next() {
 		vote := models.Vote{}
-		if err := rows.Scan(&vote.Id, &vote.Date, &vote.PlaceId, &vote.UserId, &vote.HappyhourId); err != nil {
+		if err := rows.Scan(&vote.Id, &vote.Date, &vote.PlaceId, &vote.UserId, &vote.HappyhourId, &vote.Place.Id, &vote.Place.Appreciation, &vote.Place.Prixmoyen, &vote.Place.Adresse, &vote.Place.Ville, &vote.Place.Datecreation, &vote.Place.Nom, &vote.Place.NoteCopiosite, &vote.Place.NoteDeliciosite, &vote.Place.NoteCadre, &vote.Place.NoteAccueil, &vote.Place.Note, &vote.Place.QuartierId, &vote.Place.CategorieId, &vote.HappyHour.Id, &vote.HappyHour.Nom, &vote.HappyHour.DateApero, &vote.HappyHour.DateCreation, &vote.HappyHour.CreateurId, &vote.User.Nom, &vote.User.Id, &vote.User.Mail, &vote.User.NumTel); err != nil {
 			return nil, err
 		}
 		votes = append(votes, &vote)

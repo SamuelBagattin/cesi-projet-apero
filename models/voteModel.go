@@ -8,4 +8,7 @@ type Vote struct {
 	PlaceId     int8      `json:"placeId"`
 	UserId      int8      `json:"userId"`
 	HappyhourId int8      `json:"happyHourId"`
+	Place       `json:"place"`
+	User        `json:"user"`
+	HappyHour   `json:"happyHour"`
 }

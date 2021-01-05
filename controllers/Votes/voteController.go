@@ -7,10 +7,17 @@ import (
 	voteRepository "github.com/SamuelBagattin/cesi-projet-apero/repositories/votes"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 func GetAll(c *gin.Context) {
-	vote, err := voteRepository.GetAll()
+	idApero := c.Param(controllers.IdQueryparam)
+	idAperoInt, parseError := strconv.Atoi(idApero)
+	if parseError != nil {
+		controllers.SendIntegerParsingError(c, idApero)
+		return
+	}
+	vote, err := voteRepository.GetAll(idAperoInt)
 	if err != nil {
 		controllers.SendInternalServerError(c, err)
 		return
