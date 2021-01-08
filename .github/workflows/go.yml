@@ -21,9 +21,6 @@ jobs:
 
     - name: Test
       run: go test -v ./...
-    
-    - name: Lint
-      run: go lint -v ./...
       
     - name: SonarCloud Scan
       # You may pin to the exact commit or the version.
