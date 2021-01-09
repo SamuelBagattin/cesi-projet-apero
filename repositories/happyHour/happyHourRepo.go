@@ -2,6 +2,7 @@ package happyHourRepository
 
 import (
 	"github.com/SamuelBagattin/cesi-projet-apero/config"
+	"github.com/SamuelBagattin/cesi-projet-apero/custom_errors"
 	"github.com/SamuelBagattin/cesi-projet-apero/models"
 	"log"
 )
@@ -62,4 +63,23 @@ func GetAll() (*[]*models.HappyHour, error) {
 	}
 
 	return &happyHours, nil
+}
+
+func GetOne(id int) (*models.Place, error) {
+
+	row := config.DatabaseInit().QueryRow("select id, appreciation, prixmoyen, adresse, ville, datecreation, nom, quartier_id, categorie_id, notecopiosite, notedeliciosite, notecadre, noteaccueil from endroit where id = $1", id)
+
+	place := models.Place{}
+
+	if err := row.Scan(&place.Id, &place.Appreciation, &place.Prixmoyen, &place.Adresse, &place.Ville,
+		&place.Datecreation, &place.Nom, &place.QuartierId, &place.CategorieId, &place.NoteCopiosite, &place.NoteDeliciosite, &place.NoteCadre, &place.NoteAccueil); err != nil {
+		if err.Error() == "sql: no rows in result set" {
+			return nil, custom_errors.EntityNotFound{
+				Id: id,
+			}
+		}
+		return nil, err
+	}
+
+	return &place, nil
 }
