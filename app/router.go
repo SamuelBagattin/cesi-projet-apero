@@ -43,6 +43,7 @@ func InitalizeRouter() {
 	happyHourGroup := r.Group("/happy-hours")
 	{
 		happyHourGroup.GET("", happyHourController.GetAll)
+		happyHourGroup.GET("/:id", happyHourController.GetOne)
 		happyHourGroup.GET("/:id/votes", voteController.GetAll)
 		happyHourGroup.POST("", happyHourController.Create)
 	}

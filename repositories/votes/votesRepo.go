@@ -39,7 +39,7 @@ from vote
 	return &votes, nil
 }
 
-func Create(vote models.Vote) error {
+func Create(vote models.AddVoteRequest) error {
 
 	_, err := config.DatabaseInit().Exec("insert into vote (utilisateur_id, apero_id, endroit_id, datevote) values ($1,$2,$3,current_date)", vote.UserId, vote.HappyhourId, vote.PlaceId)
 	if err != nil {
@@ -47,7 +47,7 @@ func Create(vote models.Vote) error {
 	}
 	return nil
 }
-func Update(vote models.Vote) error {
+func Update(vote models.UpdateVoteRequest) error {
 
 	_, err := config.DatabaseInit().Exec("UPDATE vote SET utilisateur_id = $1, apero_id = $2, endroit_id = $3, datevote = current_date WHERE id = $4", vote.UserId, vote.HappyhourId, vote.PlaceId, vote.Id)
 	if err != nil {
@@ -55,7 +55,7 @@ func Update(vote models.Vote) error {
 	}
 	return nil
 }
-func CreateAll(votes []models.Vote) error {
+func CreateAll(votes []models.AddVoteRequest) error {
 
 	var query strings.Builder
 	query.WriteString("insert into vote (utilisateur_id, apero_id, endroit_id, datevote) values")
@@ -70,7 +70,7 @@ func CreateAll(votes []models.Vote) error {
 	return nil
 }
 
-func UpdateAll(votes []models.Vote) error {
+func UpdateAll(votes []models.UpdateVoteRequest) error {
 
 	var query strings.Builder
 	query.WriteString("update vote as u set endroit_id = u2.endroit_id, apero_id = u2.apero_id, utilisateur_id = u2.utilisateur_id, datevote = current_date from (values ")
@@ -89,10 +89,10 @@ func UpdateAll(votes []models.Vote) error {
 	return nil
 }
 
-func GetOne(id int) (*models.Vote, error) {
+func GetOne(id int) (*models.UpdateVoteRequest, error) {
 	row := config.DatabaseInit().QueryRow("select id, utilisateur_id, apero_id, endroit_id  from vote where id = $1", id)
 
-	vote := models.Vote{}
+	vote := models.UpdateVoteRequest{}
 
 	if err := row.Scan(&vote.Id, &vote.UserId, &vote.HappyhourId, &vote.PlaceId); err != nil {
 		if err.Error() == "sql: no rows in result set" {

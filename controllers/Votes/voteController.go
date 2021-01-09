@@ -31,14 +31,14 @@ func GetAll(c *gin.Context) {
 
 func Create(c *gin.Context) {
 
-	var vote models.Vote
-	var voteList []models.Vote
+	var vote models.AddVoteRequest
+	var voteList []models.AddVoteRequest
 
 	var bodyError error
 	var listBodyError error
 
 	raw, _ := c.GetRawData()
-	bodyError = c.ShouldBindJSON(&vote)
+	bodyError = json.Unmarshal(raw, &vote)
 	if bodyError != nil {
 		listBodyError = json.Unmarshal(raw, &voteList)
 	}
@@ -69,14 +69,14 @@ func Create(c *gin.Context) {
 }
 func Update(c *gin.Context) {
 
-	var vote models.Vote
-	var voteList []models.Vote
+	var vote models.UpdateVoteRequest
+	var voteList []models.UpdateVoteRequest
 
 	var bodyError error
 	var listBodyError error
 
 	raw, _ := c.GetRawData()
-	bodyError = c.ShouldBindJSON(&vote)
+	bodyError = json.Unmarshal(raw, &vote)
 	if bodyError != nil {
 		listBodyError = json.Unmarshal(raw, &voteList)
 	}
