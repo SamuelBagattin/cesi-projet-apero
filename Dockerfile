@@ -4,7 +4,7 @@ COPY . .
 RUN go get ./...
 RUN go build -o cesi_projet_apero ./app
 
-FROM alpine:latest
+FROM alpine:3.15.4
 WORKDIR /root/
 COPY --from=builder /application/cesi_projet_apero .
 ENTRYPOINT ["./cesi_projet_apero"]
